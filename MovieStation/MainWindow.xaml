@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MovieStation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Movie Station" Height="450" Width="800">
     <TabControl x:Name="tabControl" Grid.Column="1" Margin="0,0,0,0">
 
         <TabItem Header="Moive Station">
@@ -40,10 +40,8 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <Button x:Name="Play" Content="Play" Click="Play_Click" Grid.Column="7" Margin="0,0,0,0" Grid.Row="5" Grid.ColumnSpan="1"/>
-                <Button x:Name="OpenFolder" Content="Open Dir" Click="OpenFolder_Click" Grid.Column="5" Margin="0,0,0,0" Grid.Row="5" Grid.ColumnSpan="1"/>
-                <CheckBox Name="FlacCheckBox" IsChecked="{Binding Path=isFlacOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Content="Flac Only" Grid.Column="3" Grid.Row="1"/>
-                <CheckBox Name="FolderNameCheckBox" IsChecked="{Binding Path=isDirOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Folder Match" Grid.Column="5" Grid.Row="1"/>
-                <Button x:Name="folderSelection" Content="选择文件夹" Click="folderSelection_Click" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="21"/>
+                <Button x:Name="OpenFolder" Content="Open Dir" Click="OpenFolder_Click" Grid.Column="5" Margin="0,0,0,0" Grid.Row="5" Grid.ColumnSpan="1"/>                
+                
             </Grid>
         </TabItem>
   

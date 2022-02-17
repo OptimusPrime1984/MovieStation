@@ -37,7 +37,7 @@ namespace MovieStation
         /// 
 
         public List<FileInfo> movieFiles = new List<FileInfo>();
-        public List<SimpleFile> sfsmusic = new List<SimpleFile>();
+
 
 
         public List<SimpleFile> sfsMovie = new List<SimpleFile>();
@@ -66,10 +66,10 @@ namespace MovieStation
 
         private void GetAllFolders()
         {
-            List<string> allsharedDirs = new List<string>() {@"\\M6400\emule",
-                                                            @"\\M6400\movie",
-                                                            @"\\M6400\emule",
-                                                            @"\\M6400\BaiduNetdiskDownload",
+            List<string> allsharedDirs = new List<string>() {
+                                                            @"\\M6400\m6400_d\emule",
+                                                            @"\\M6400\m6400_d\movies",
+                                                            @"\\M6400\m6400_d\BaiduNetdiskDownload",
                                                             @"\\Quadcore\d\TV",
                                                             @"\\Quadcore\e\TV",
                                                             @"\\Quadcore\e\Movies",
@@ -78,7 +78,11 @@ namespace MovieStation
                                                             @"\\Quadcore\h\BBC",
                                                             @"\\tp-share\I\Movies",
                                                             @"\\tp-share\H\TF",
-                                                            @"\\MSI\Movies"
+                                                            @"\\MSI\Movies",
+                                                            @"\\Xeon\160gbi\BaiduDownload",
+                                                            @"\\Xeon\500gbf\Movies And TV",
+                                                            @"\\Xeon\e\Movie and TV",
+                                                            @"\\Xeon\h\TV"
                                                             //@"\\tp-share\G\TV"
                                                              };
 
@@ -101,8 +105,7 @@ namespace MovieStation
         {
             string[] allfiles = Directory.GetFiles(dir, "*.mkv", SearchOption.AllDirectories);
 
-
-            sfsmusic = new List<SimpleFile>();
+                        
             foreach (var f in allfiles)
             {
                 FileInfo fi = new FileInfo(f);
@@ -118,50 +121,9 @@ namespace MovieStation
 
         }
 
-    
+     
 
-
-        private void LoadMusicInFolder(string dir)
-        {
-            string[] allfiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories);
-
-            sfsmusic = new List<SimpleFile>();
-            foreach (var f in allfiles)
-            {
-                FileInfo fi = new FileInfo(f);
-                sfsmusic.Add(new SimpleFile()
-                {
-                    FileDir = fi.DirectoryName,
-                    FileFormat = fi.Extension,
-                    FileName = fi.Name,
-                    fullname = f
-                });
-            }
-
-            Maindtg.ItemsSource = sfsmusic;
-        }
-
-        private void folderSelection_Click(object sender, RoutedEventArgs e)
-        {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
-            {
-                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-                if (result.ToString() != string.Empty)
-                {
-                    musicPath = dialog.SelectedPath;
-                }
-            }
-            if (Directory.Exists(musicPath))
-            {
-                LoadMusicInFolder(musicPath);
-            }
-
-        }
-
-
-
-
-
+        
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SearchTextBox.Text != "")
@@ -172,14 +134,14 @@ namespace MovieStation
                 {
                     if (isFlacOnly)
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileDir.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               && x.FileFormat == ".flac"
                                               select x;
                     }
                     else
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileDir.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               select x;
                     }
@@ -188,14 +150,14 @@ namespace MovieStation
                 {
                     if (isFlacOnly)
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileName.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               && x.FileFormat == ".flac"
                                               select x;
                     }
                     else
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileName.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               select x;
                     }
@@ -208,7 +170,7 @@ namespace MovieStation
             {
                 e.Handled = true;
 
-                Maindtg.ItemsSource = sfsmusic;
+                Maindtg.ItemsSource = sfsMovie;
             }
         }
 
