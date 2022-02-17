@@ -78,7 +78,7 @@ namespace MovieStation
                                                             @"\\Quadcore\h\BBC",
                                                             @"\\tp-share\I\Movies",
                                                             @"\\tp-share\H\TF",
-                                                            @"\\MSI\D"
+                                                            @"\\MSI\Movies"
                                                             //@"\\tp-share\G\TV"
                                                              };
 
