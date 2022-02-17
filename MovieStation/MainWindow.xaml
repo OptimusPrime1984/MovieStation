@@ -6,7 +6,47 @@
         xmlns:local="clr-namespace:MovieStation"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <TabControl x:Name="tabControl" Grid.Column="1" Margin="0,0,0,0">
+
+        <TabItem Header="Moive Station">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="22*"/>
+                    <ColumnDefinition Width="371*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="132*"/>
+                    <ColumnDefinition Width="22*"/>
+                    <ColumnDefinition Width="109*"/>
+                    <ColumnDefinition Width="12*"/>
+                    <ColumnDefinition Width="99*"/>
+                    <ColumnDefinition Width="15*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="16*"/>
+                    <RowDefinition Height="21*"/>
+                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="324*"/>
+                    <RowDefinition Height="11*"/>
+                    <RowDefinition Height="31*"/>
+                    <RowDefinition Height="9*"/>
+                </Grid.RowDefinitions>
+                <TextBox Name="SearchTextBox" TextChanged="SearchTextBox_TextChanged" Grid.Column="1" Margin="0,0,0,0" TextWrapping="Wrap" Text="" Grid.Row="1"/>
+                <DataGrid Name="Maindtg" Grid.Column="1" Margin="0,0,0,0" Grid.Row="3" Grid.ColumnSpan="7" AutoGenerateColumns="False" MouseDoubleClick="Maindtg_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header = "FileDir" IsReadOnly = "True" Width = "5*" Binding = "{Binding FileDir, UpdateSourceTrigger = PropertyChanged}" />
+                        <DataGridTextColumn Header = "FileName" IsReadOnly = "True" Width = "5*" Binding = "{Binding FileName, UpdateSourceTrigger = PropertyChanged}" />
+                        <DataGridTextColumn Header = "FileFormat" IsReadOnly = "True" Width = "1*" Binding = "{Binding FileFormat, UpdateSourceTrigger = PropertyChanged}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button x:Name="Play" Content="Play" Click="Play_Click" Grid.Column="7" Margin="0,0,0,0" Grid.Row="5" Grid.ColumnSpan="1"/>
+                <Button x:Name="OpenFolder" Content="Open Dir" Click="OpenFolder_Click" Grid.Column="5" Margin="0,0,0,0" Grid.Row="5" Grid.ColumnSpan="1"/>
+                <CheckBox Name="FlacCheckBox" IsChecked="{Binding Path=isFlacOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Content="Flac Only" Grid.Column="3" Grid.Row="1"/>
+                <CheckBox Name="FolderNameCheckBox" IsChecked="{Binding Path=isDirOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Folder Match" Grid.Column="5" Grid.Row="1"/>
+                <Button x:Name="folderSelection" Content="选择文件夹" Click="folderSelection_Click" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="21"/>
+            </Grid>
+        </TabItem>
+  
+    </TabControl>
+
 </Window>
