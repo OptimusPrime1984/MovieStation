@@ -43,7 +43,7 @@
                 <Button x:Name="OpenFolder" Content="Open Dir" Click="OpenFolder_Click" Grid.Column="5" Margin="0,0,0,0" Grid.Row="5" Grid.ColumnSpan="1"/>
                 <CheckBox Name="FlacCheckBox" IsChecked="{Binding Path=isFlacOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Content="Flac Only" Grid.Column="3" Grid.Row="1"/>
                 <CheckBox Name="FolderNameCheckBox" IsChecked="{Binding Path=isDirOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Folder Match" Grid.Column="5" Grid.Row="1"/>
-                <Button x:Name="folderSelection" Content="选择文件夹" Click="folderSelection_Click" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="21"/>
+                <Button x:Name="folderSelection" Content="Refresh" Click="RefreshClick" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="99" Height="21"/>
             </Grid>
         </TabItem>
   

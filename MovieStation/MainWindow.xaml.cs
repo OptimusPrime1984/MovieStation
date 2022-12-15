@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
-
+using System.IO.Compression;
 
 namespace MovieStation
 {
@@ -37,12 +37,12 @@ namespace MovieStation
         /// 
 
         public List<FileInfo> movieFiles = new List<FileInfo>();
-        public List<SimpleFile> sfsmusic = new List<SimpleFile>();
-
+        
 
         public List<SimpleFile> sfsMovie = new List<SimpleFile>();
 
-        string musicPath = @"\\Xeon\d\Music";
+        List<string> moviePaths =new List<string> { @"\\Xeon\e\AllMovies", @"\\Xeon\e\NewTV", @"\\Xeon\e\TV" };
+        string movieIndexFile = @"\\Xeon\e\AllMovies\index.sf";
         public bool isFlacOnly { get; set; }
         public bool isDirOnly { get; set; }
 
@@ -51,62 +51,41 @@ namespace MovieStation
         public MainWindow()
         {
             InitializeComponent();
-
+            sfsMovie = new List<SimpleFile>();
             this.DataContext = this;
 
-            GetAllFolders();
 
-            //    if (Directory.Exists(musicPath))
-            //    {
-            //        LoadMusicInFolder(musicPath);
-            //    }
-        }
-
-
-
-        private void GetAllFolders()
-        {
-            List<string> allsharedDirs = new List<string>() {@"\\M6400\emule",
-                                                            @"\\M6400\movie",
-                                                            @"\\M6400\emule",
-                                                            @"\\M6400\BaiduNetdiskDownload",
-                                                            @"\\Quadcore\d\TV",
-                                                            @"\\Quadcore\e\TV",
-                                                            @"\\Quadcore\e\Movies",
-                                                            @"\\Quadcore\g\TV",
-                                                            @"\\Quadcore\g\New Movies",
-                                                            @"\\Quadcore\h\BBC",
-                                                            @"\\tp-share\I\Movies",
-                                                            @"\\tp-share\H\TF",
-                                                            @"\\MSI\Movies"
-                                                            //@"\\tp-share\G\TV"
-                                                             };
-
-            foreach (var dir in allsharedDirs)
+            if (File.Exists(movieIndexFile))
             {
-                if (Directory.Exists(dir))
+                readSimpleFileList(movieIndexFile);
+            }
+            else
+            {
+                foreach(var mp in moviePaths)
                 {
-                    LoadMovieFolders(dir);
+                    if (Directory.Exists(mp))
+                    {
+                        LoadMusicInFolder(mp);
+                    }
                 }
+                              
+
+                saveSimpleFileList(sfsMovie);
             }
 
             Maindtg.ItemsSource = sfsMovie;
-
-            
         }
 
 
-
-        private void LoadMovieFolders(string dir)
+    
+        private void LoadMusicInFolder(string dir)
         {
-            string[] allfiles = Directory.GetFiles(dir, "*.mkv", SearchOption.AllDirectories);
+            string[] allfiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories);
 
-
-            sfsmusic = new List<SimpleFile>();
+            
             foreach (var f in allfiles)
             {
                 FileInfo fi = new FileInfo(f);
-                movieFiles.Add(fi);
                 sfsMovie.Add(new SimpleFile()
                 {
                     FileDir = fi.DirectoryName,
@@ -115,53 +94,19 @@ namespace MovieStation
                     fullname = f
                 });
             }
-
         }
 
-    
-
-
-        private void LoadMusicInFolder(string dir)
+        public void saveSimpleFileList(List<SimpleFile> sfsmusic)
         {
-            string[] allfiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories);
-
-            sfsmusic = new List<SimpleFile>();
-            foreach (var f in allfiles)
-            {
-                FileInfo fi = new FileInfo(f);
-                sfsmusic.Add(new SimpleFile()
-                {
-                    FileDir = fi.DirectoryName,
-                    FileFormat = fi.Extension,
-                    FileName = fi.Name,
-                    fullname = f
-                });
-            }
-
-            Maindtg.ItemsSource = sfsmusic;
+            WriteToZipFile<List<SimpleFile>>(movieIndexFile, sfsmusic);
         }
 
-        private void folderSelection_Click(object sender, RoutedEventArgs e)
+        public void readSimpleFileList(string saveFilePath)
         {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
-            {
-                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
-                if (result.ToString() != string.Empty)
-                {
-                    musicPath = dialog.SelectedPath;
-                }
-            }
-            if (Directory.Exists(musicPath))
-            {
-                LoadMusicInFolder(musicPath);
-            }
-
+            sfsMovie = ReadFromZipFile<List<SimpleFile>>(movieIndexFile);
         }
 
-
-
-
-
+        
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SearchTextBox.Text != "")
@@ -172,14 +117,14 @@ namespace MovieStation
                 {
                     if (isFlacOnly)
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileDir.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               && x.FileFormat == ".flac"
                                               select x;
                     }
                     else
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileDir.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               select x;
                     }
@@ -188,14 +133,14 @@ namespace MovieStation
                 {
                     if (isFlacOnly)
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileName.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               && x.FileFormat == ".flac"
                                               select x;
                     }
                     else
                     {
-                        Maindtg.ItemsSource = from x in sfsmusic
+                        Maindtg.ItemsSource = from x in sfsMovie
                                               where x.FileName.Contains(SearchTextBox.Text, StringComparison.OrdinalIgnoreCase)
                                               select x;
                     }
@@ -208,21 +153,32 @@ namespace MovieStation
             {
                 e.Handled = true;
 
-                Maindtg.ItemsSource = sfsmusic;
+                Maindtg.ItemsSource = sfsMovie;
             }
         }
 
-
-
         private void Play_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).fullname);
+            try
+            {
+                System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).fullname);
+            }
+            catch
+            {
+                System.Windows.MessageBox.Show("No Such File, please refresh");
+            }
+            
         }
 
         private void OpenFolder_Click(object sender, RoutedEventArgs e)
         {
-
+            try { 
             System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).FileDir);
+            }
+            catch
+            {
+                System.Windows.MessageBox.Show("No Such Folder");
+            }
         }
 
         private void Maindtg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -230,54 +186,72 @@ namespace MovieStation
             System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).fullname);
         }
 
-     
 
-        private void PlayMovie_Click(object sender, RoutedEventArgs e)
+        public void WriteToZipFile<T>(string filePath, T objectToWrite, bool append = false)
         {
-            System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).fullname);
-        }
-
-        private void OpenMvFolder_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).FileDir);
-        }
-
-        private void MovieMaindtg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).fullname);
-        }
-
-
-    }
-
-    public class SimpleFile
-    {
-        #region Members
-        private string _fileDir;
-        private string _fileName;
-        private string _fileFormat;
-        #endregion
-
-        public string fullname { get; set; }
-        //public string FileName { get; set; }
-        #region Properties
-        public string FileDir { get { return _fileDir; } set { _fileDir = value; OnPropertyChanged("FileDir"); } }
-        public string FileName { get { return _fileName; } set { _fileName = value; OnPropertyChanged("FileName"); } }
-        public string FileFormat { get { return _fileFormat; } set { _fileFormat = value; OnPropertyChanged("FileFormat"); } }
-        #endregion
-
-
-        // INotifyPropertyChanged interface
-        [field: NonSerialized]
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
+            using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            //using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            using (GZipStream gz = new GZipStream(stream, CompressionMode.Compress))
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                binaryFormatter.Serialize(gz, objectToWrite);
             }
         }
+
+
+        public T ReadFromZipFile<T>(string filePath)
+        {
+            //using (Stream stream = File.Open(filePath, FileMode.Open))
+            using (Stream stream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            using (GZipStream gz = new GZipStream(stream, CompressionMode.Decompress))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                return (T)binaryFormatter.Deserialize(gz);
+            }
+        }
+
+        private void RefreshClick(object sender, RoutedEventArgs e)
+        {
+            foreach(var mp in moviePaths)
+            {
+                if (Directory.Exists(mp))
+                {
+                    LoadMusicInFolder(mp);
+                }
+            }
+            
+
+            saveSimpleFileList(sfsMovie);
+            Maindtg.ItemsSource = sfsMovie;
+        }
+    }
+
+ 
+    public class IOFunctions
+    {
+        public static void WriteToZipFile<T>(string filePath, T objectToWrite, bool append = false)
+        {
+            using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            //using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            using (GZipStream gz = new GZipStream(stream, CompressionMode.Compress))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                binaryFormatter.Serialize(gz, objectToWrite);
+            }
+        }
+
+
+        public static T ReadFromZipFile<T>(string filePath)
+        {
+            //using (Stream stream = File.Open(filePath, FileMode.Open))
+            using (Stream stream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            using (GZipStream gz = new GZipStream(stream, CompressionMode.Decompress))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                return (T)binaryFormatter.Deserialize(gz);
+            }
+        }
+
     }
 }
 
