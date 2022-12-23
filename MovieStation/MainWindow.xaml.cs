@@ -183,7 +183,14 @@ namespace MovieStation
 
         private void Maindtg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).fullname);
+            try
+            {
+                System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).fullname);
+            }
+            catch
+            {
+                System.Windows.MessageBox.Show("No Such File, please refresh");
+            }
         }
 
 
