@@ -37,11 +37,11 @@ namespace MovieStation
         /// 
 
         public List<FileInfo> movieFiles = new List<FileInfo>();
-        
+
 
         public List<SimpleFile> sfsMovie = new List<SimpleFile>();
 
-        List<string> moviePaths =new List<string> { @"\\Xeon\e\AllMovies", @"\\Xeon\e\NewTV", @"\\Xeon\e\TV" };
+        List<string> moviePaths = new List<string> { @"\\Xeon\e\AllMovies", @"\\Xeon\e\NewTV", @"\\Xeon\e\TV" };
         string movieIndexFile = @"\\Xeon\e\AllMovies\index.sf";
         public bool isFlacOnly { get; set; }
         public bool isDirOnly { get; set; }
@@ -61,13 +61,13 @@ namespace MovieStation
             }
             else
             {
-                foreach(var mp in moviePaths)
+                foreach (var mp in moviePaths)
                 {
                     if (Directory.Exists(mp))
                     {
                         LoadMusicInFolder(mp);
                     }
-                }                              
+                }
 
                 saveSimpleFileList(sfsMovie);
             }
@@ -76,22 +76,28 @@ namespace MovieStation
         }
 
 
-    
+
         private void LoadMusicInFolder(string dir)
         {
             string[] allfiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories);
 
-            
+
             foreach (var f in allfiles)
             {
                 FileInfo fi = new FileInfo(f);
+
+                if (fi.Length / (1024 * 1024) < 5)
+                {
+                    continue;
+                }
+
                 sfsMovie.Add(new SimpleFile()
                 {
                     FileDir = fi.DirectoryName,
                     FileFormat = fi.Extension,
                     FileName = fi.Name,
                     fullname = f,
-                    size= SizeConverter(fi.Length)
+                    size = SizeConverter(fi.Length)
                 });
             }
 
@@ -108,7 +114,7 @@ namespace MovieStation
             sfsMovie = ReadFromZipFile<List<SimpleFile>>(movieIndexFile);
         }
 
-        
+
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SearchTextBox.Text != "")
@@ -169,13 +175,14 @@ namespace MovieStation
             {
                 System.Windows.MessageBox.Show("No Such File, please refresh");
             }
-            
+
         }
 
         private void OpenFolder_Click(object sender, RoutedEventArgs e)
         {
-            try { 
-            System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).FileDir);
+            try
+            {
+                System.Diagnostics.Process.Start(((SimpleFile)Maindtg.SelectedItem).FileDir);
             }
             catch
             {
@@ -221,14 +228,13 @@ namespace MovieStation
 
         private void RefreshClick(object sender, RoutedEventArgs e)
         {
-            foreach(var mp in moviePaths)
+            foreach (var mp in moviePaths)
             {
                 if (Directory.Exists(mp))
                 {
                     LoadMusicInFolder(mp);
                 }
             }
-            
 
             saveSimpleFileList(sfsMovie);
             Maindtg.ItemsSource = sfsMovie;
@@ -250,7 +256,7 @@ namespace MovieStation
         }
     }
 
- 
+
     public class IOFunctions
     {
         public static void WriteToZipFile<T>(string filePath, T objectToWrite, bool append = false)
