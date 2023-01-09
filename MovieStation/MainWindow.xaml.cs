@@ -67,8 +67,7 @@ namespace MovieStation
                     {
                         LoadMusicInFolder(mp);
                     }
-                }
-                              
+                }                              
 
                 saveSimpleFileList(sfsMovie);
             }
@@ -91,9 +90,12 @@ namespace MovieStation
                     FileDir = fi.DirectoryName,
                     FileFormat = fi.Extension,
                     FileName = fi.Name,
-                    fullname = f
+                    fullname = f,
+                    size= SizeConverter(fi.Length)
                 });
             }
+
+            sfsMovie = sfsMovie.Distinct().ToList();
         }
 
         public void saveSimpleFileList(List<SimpleFile> sfsmusic)
@@ -230,6 +232,21 @@ namespace MovieStation
 
             saveSimpleFileList(sfsMovie);
             Maindtg.ItemsSource = sfsMovie;
+        }
+
+        private string SizeConverter(long Length)
+        {
+            string sLen = Length.ToString();
+            if (Length >= (1 << 30))
+                sLen = string.Format("{0}Gb", Length >> 30);
+            else
+            if (Length >= (1 << 20))
+                sLen = string.Format("{0}Mb", Length >> 20);
+            else
+            if (Length >= (1 << 10))
+                sLen = string.Format("{0}Kb", Length >> 10);
+
+            return sLen;
         }
     }
 
