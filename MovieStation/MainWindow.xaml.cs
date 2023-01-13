@@ -228,6 +228,7 @@ namespace MovieStation
 
         private void RefreshClick(object sender, RoutedEventArgs e)
         {
+            sfsMovie = new List<SimpleFile>();
             foreach (var mp in moviePaths)
             {
                 if (Directory.Exists(mp))
