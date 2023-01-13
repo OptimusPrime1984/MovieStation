@@ -69,7 +69,6 @@ namespace MovieStation
                     }
                 }
 
-
                 saveSimpleFileList(sfsMovie);
             }
 
@@ -86,14 +85,23 @@ namespace MovieStation
             foreach (var f in allfiles)
             {
                 FileInfo fi = new FileInfo(f);
+
+                if (fi.Length / (1024 * 1024) < 5)
+                {
+                    continue;
+                }
+
                 sfsMovie.Add(new SimpleFile()
                 {
                     FileDir = fi.DirectoryName,
                     FileFormat = fi.Extension,
                     FileName = fi.Name,
-                    fullname = f
+                    fullname = f,
+                    size = SizeConverter(fi.Length)
                 });
             }
+
+            sfsMovie = sfsMovie.Distinct().ToList();
         }
 
         public void saveSimpleFileList(List<SimpleFile> sfsmusic)
@@ -228,30 +236,23 @@ namespace MovieStation
                 }
             }
 
-
             saveSimpleFileList(sfsMovie);
             Maindtg.ItemsSource = sfsMovie;
         }
 
-        private void Maindtg_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private string SizeConverter(long Length)
         {
-            var grid = (System.Windows.Controls.DataGrid)sender;
-            if (Key.Delete == e.Key)
-            {
-                if (grid.SelectedItems.Count > 1)
-                {
-                    return;
-                }
+            string sLen = Length.ToString();
+            if (Length >= (1 << 30))
+                sLen = string.Format("{0}Gb", Length >> 30);
+            else
+            if (Length >= (1 << 20))
+                sLen = string.Format("{0}Mb", Length >> 20);
+            else
+            if (Length >= (1 << 10))
+                sLen = string.Format("{0}Kb", Length >> 10);
 
-                SimpleFile item = (SimpleFile)grid.SelectedItem;
-
-                string filename = item.fullname;
-
-                //foreach (var row in grid.SelectedItems)
-                //{
-
-                //}
-            }
+            return sLen;
         }
     }
 

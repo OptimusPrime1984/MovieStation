@@ -37,6 +37,7 @@
                         <DataGridTextColumn Header = "FileDir" IsReadOnly = "True" Width = "5*" Binding = "{Binding FileDir, UpdateSourceTrigger = PropertyChanged}" />
                         <DataGridTextColumn Header = "FileName" IsReadOnly = "True" Width = "5*" Binding = "{Binding FileName, UpdateSourceTrigger = PropertyChanged}" />
                         <DataGridTextColumn Header = "FileFormat" IsReadOnly = "True" Width = "1*" Binding = "{Binding FileFormat, UpdateSourceTrigger = PropertyChanged}" />
+                        <DataGridTextColumn Header = "Size" IsReadOnly = "True" Width = "1*" Binding = "{Binding size, UpdateSourceTrigger = PropertyChanged}" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <Button x:Name="Play" Content="Play" Click="Play_Click" Grid.Column="7" Margin="0,0,0,0" Grid.Row="5" Grid.ColumnSpan="1"/>
