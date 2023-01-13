@@ -254,6 +254,28 @@ namespace MovieStation
 
             return sLen;
         }
+
+        private void Maindtg_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            var grid = (System.Windows.Controls.DataGrid)sender;
+            if (Key.Delete == e.Key)
+            {
+                foreach (var item in grid.SelectedItems)
+                {
+                    SimpleFile selectedFile = (SimpleFile)item;
+                    if (System.Windows.MessageBox.Show("Do you want to delete this file? " 
+                            + Environment.NewLine+ selectedFile.FileName + "\t" + selectedFile.size,
+                            "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        File.Delete(selectedFile.fullname);
+                    }
+                    else
+                    {
+                        
+                    }                    
+                }
+            }
+        }
     }
 
 
