@@ -41,8 +41,8 @@ namespace MovieStation
 
         public List<SimpleFile> sfsMovie = new List<SimpleFile>();
 
-        List<string> moviePaths = new List<string> { @"\\Xeon\e\AllMovies", @"\\Xeon\e\NewTV", @"\\Xeon\e\TV" };
-        string movieIndexFile = @"\\Xeon\e\AllMovies\index.sf";
+        List<string> moviePaths = new List<string> { @"\\Xeon\Element 20TB\AllMovies", @"\\Xeon\Element 20TB\NewTV", @"\\Xeon\Element 20TB\TV" };
+        string movieIndexFile = @"\\Xeon\Element 20TB\AllMovies\index.sf";
         public bool isFlacOnly { get; set; }
         public bool isDirOnly { get; set; }
 
